@@ -1,7 +1,14 @@
 package game;
 
 import exceptions.IncorrectGuessLengthException;
+import util.Language;
 import util.Type;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Random;
 
 public class Game {
     private String word;
@@ -12,18 +19,31 @@ public class Game {
     public final int wordLength;
     public int totalGuesses;
 
-    public Game() {this(6, 5);}
+    public Language lang;
 
-    public Game(int maxGuesses, int wordLength) {
+    public Game() {this(6, 5, Language.ENGLISH);}
+
+    public Game(Language lang) {this(6, 5, lang);}
+
+    public Game(int maxGuesses, int wordLength, Language lang) {
         this.maxGuesses = maxGuesses;
         this.wordLength = wordLength;
         guesses = new String[maxGuesses];
         totalGuesses = 0;
+        this.lang = lang;
         newWord();
     }
 
+    private static final Random random = new Random ();
+
+    /**
+     * chooses a random word to guess from dictionary
+     */
     private void newWord() {
-        word = "CREEP";
+        String[] words = lang.getWords();
+        int i = random.nextInt(words.length);
+        word = words[i].toUpperCase();
+        System.out.println(word);
         resetValidation();
     }
 
