@@ -23,7 +23,7 @@ public class Game {
     }
 
     private void newWord() {
-        word = "CRANE";
+        word = "CREEP";
         resetValidation();
     }
 
@@ -34,21 +34,23 @@ public class Game {
     private void validate() {
         for (int i = 0; i < maxGuesses; i++) {
             String g = guesses[i];
-            if (g == null) {
-                continue;
-            }
-            for (int j = 0; j < wordLength; j++) {  //TODO: what if guess / word has multiple occurences of the same letter
-                if (g.charAt(j) == word.charAt(j)) {
-                    validation[i][j] = Type.POSITION;
-                } else if (word.indexOf(g.charAt(j)) != -1) {
-                    validation[i][j] = Type.LETTER;
-                }
+            if (g == null) continue;
+            for (int j = 0; j < wordLength; j++) {
+                char c = word.charAt(j);
+                if (g.charAt(j) == c) validation[i][j] = Type.POSITION;
                 else {
-                    validation[i][j] = Type.WRONG;
+                    for (int k = 0; k < wordLength; k++) {
+                        if (g.charAt(k) == c && validation[i][k] == null) {
+                            validation[i][k] = Type.LETTER;
+                            break;
+                        }
+                    }
                 }
+            }
+            for (int l = 0; l < wordLength; l++) {
+                if (validation[i][l] == null) validation[i][l] = Type.WRONG;
             }
         }
-
     }
 
     public boolean guess(String guessWord) throws IncorrectGuessLengthException {
