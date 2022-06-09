@@ -7,6 +7,9 @@ import util.Type;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
@@ -54,21 +57,28 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         int w = getWidth();
 
         int x, y;
-        int x0 = x = (w - (game.wordLength - 1)*(SQUARE_SIZE + SPACING))/2;
+        int x0 = x = (w - (game.wordLength - 1) * (SQUARE_SIZE + SPACING)) / 2; //why -1?
         int y0 = y = SQUARE_SIZE + SPACING;
 
         g2.setColor(defaultColour);
         g2.setStroke(lineWidth);
 
         g2.setFont(letterFont);
+        FontMetrics metrics = g.getFontMetrics(letterFont);
 
         for (int i = 0; i < game.maxGuesses; i++) {
             for (int j = 0; j < game.wordLength; j++) {
-                if (i < game.totalGuesses) {  //TODO: center the god damn letters
+                if (i < game.totalGuesses) {
                     fillSquare(g, game.validation[i][j], x, y, SQUARE_SIZE, SQUARE_SIZE);
-                    g2.drawString(String.valueOf(game.guesses[i].charAt(j)), x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
+                    String str = String.valueOf(game.guesses[i].charAt(j));
+                    Rectangle r = new Rectangle(x - SQUARE_SIZE / 2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
+                    centerString(g, r, str, letterFont);
+                    //g2.drawString(String.valueOf(game.guesses[i].charAt(j)), x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
                 } else if (i == game.totalGuesses) {
-                    g2.drawString(String.valueOf(guesser.letters[j]), x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
+                    String str = String.valueOf(guesser.letters[j]);
+                    Rectangle r = new Rectangle(x - SQUARE_SIZE / 2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
+                    centerString(g, r, str, letterFont);
+                    //g2.drawString(str, x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
                 }
                 drawSquare(g, x, y, SQUARE_SIZE, SQUARE_SIZE);
                 x += SQUARE_SIZE + SPACING;
@@ -76,10 +86,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
             x = x0;
             y += SQUARE_SIZE + SPACING;
         }
-
-
-
     }
+
+
 
     protected void drawSquare(Graphics g, int x, int y, int h, int w) {
         g.drawRect(x - w/2, y - h/2, w, h);
@@ -88,6 +97,20 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g.setColor(t.getColour());
         g.fillRect(x - w/2, y - h/2, w, h);
         g.setColor(defaultColour);
+    }
+    public void centerString(Graphics g, Rectangle r, String s, Font font) {
+        FontRenderContext frc = new FontRenderContext(null, true, true);
+        Rectangle2D r2D = font.getStringBounds(s, frc);
+        int rWidth = (int) Math.round(r2D.getWidth());
+        int rHeight = (int) Math.round(r2D.getHeight());
+        int rX = (int) Math.round(r2D.getX());
+        int rY = (int) Math.round(r2D.getY());
+
+        int a = (r.width / 2) - (rWidth / 2) - rX;
+        int b = (r.height / 2) - (rHeight / 2) - rY;
+
+        g.setFont(font);
+        g.drawString(s, r.x + a, r.y + b);
     }
 
     @Override
