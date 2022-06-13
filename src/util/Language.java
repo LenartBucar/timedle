@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public enum Language {
-    ENGLISH(readWords("C:\\Users\\masaz\\Desktop\\faks\\2.letnik\\PROG2\\timedle\\src\\util\\wordle.txt")), SLOVENE(readWords("C:\\Users\\masaz\\Desktop\\faks\\2.letnik\\PROG2\\timedle\\src\\util\\besedle.txt"));
+    ENGLISH(readWords("src\\data\\wordle.txt")), SLOVENE(readWords("src\\data\\besedle.txt"));
 
     final String[] words;
 
