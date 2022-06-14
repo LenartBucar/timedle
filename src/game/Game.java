@@ -4,11 +4,9 @@ import exceptions.IncorrectGuessLengthException;
 import util.Language;
 import util.Type;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game {
     private String word;
@@ -21,6 +19,9 @@ public class Game {
 
     public Language lang;
 
+    public Timer timer;
+    private static final long DELAY = 30_000;
+
     public Game() {this(6, 5, Language.ENGLISH);}
 
     public Game(Language lang) {this(6, 5, lang);}
@@ -32,6 +33,11 @@ public class Game {
         totalGuesses = 0;
         this.lang = lang;
         newWord();
+
+        this.timer = new Timer();
+        TimerTask swap = new WordSwapper(this);
+        timer.scheduleAtFixedRate(swap, DELAY, DELAY);
+
     }
 
     private static final Random random = new Random ();
@@ -39,19 +45,19 @@ public class Game {
     /**
      * chooses a random word to guess from dictionary
      */
-    private void newWord() {
+    public void newWord() {
         String[] words = lang.getWords();
         int i = random.nextInt(words.length);
         word = words[i].toUpperCase();
-        System.out.println(word);
+//        System.out.println(word);
         resetValidation();
     }
 
-    private void resetValidation() {
+    public void resetValidation() {
         validation = new Type[maxGuesses][wordLength];
     }
 
-    private void validate() {
+    public void validate() {
         for (int i = 0; i < maxGuesses; i++) {
             String g = guesses[i];
             if (g == null) continue;
@@ -78,5 +84,22 @@ public class Game {
         guesses[totalGuesses++] = guessWord;
         validate();
         return guessWord.equals(word);
+    }
+
+}
+
+class WordSwapper extends TimerTask {
+    private Game game;
+
+    public WordSwapper (Game game) {
+        super();
+        this.game = game;
+    }
+
+    @Override
+    public void run() {
+        game.newWord();
+        game.resetValidation();
+        game.validate();
     }
 }
