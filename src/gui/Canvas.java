@@ -3,6 +3,7 @@ package gui;
 import exceptions.IncorrectGuessLengthException;
 import game.Game;
 import game.Guesser;
+import util.Theme;
 import util.Type;
 
 import java.awt.*;
@@ -10,7 +11,8 @@ import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import javax.swing.JPanel;
+import java.awt.geom.RoundRectangle2D;
+import javax.swing.*;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
     protected Game game;
@@ -60,27 +62,35 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         int x0 = x = (w - (game.wordLength - 1) * (SQUARE_SIZE + SPACING)) / 2; //why -1?
         int y0 = y = SQUARE_SIZE + SPACING;
 
-        g2.setColor(defaultColour);
+        //g2.setColor(defaultColour);
         g2.setStroke(lineWidth);
 
         g2.setFont(letterFont);
-        FontMetrics metrics = g.getFontMetrics(letterFont);
+
+        setBackground(game.theme.getBackgroundColor());
+        g2.setColor(game.theme.getLetterColor());
+
 
         for (int i = 0; i < game.maxGuesses; i++) {
             for (int j = 0; j < game.wordLength; j++) {
                 if (i < game.totalGuesses) {
-                    fillSquare(g, game.validation[i][j], x, y, SQUARE_SIZE, SQUARE_SIZE);
+                    //fillSquare(g, game.validation[i][j], x, y, SQUARE_SIZE, SQUARE_SIZE);
+                    g2.setColor(game.validation[i][j].getColour());
+                    g2.fillRoundRect(x, y, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
+                    g2.setColor(game.theme.getLetterColor());
                     String str = String.valueOf(game.guesses[i].charAt(j));
-                    Rectangle r = new Rectangle(x - SQUARE_SIZE / 2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
+                    Rectangle r = new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE);
                     centerString(g, r, str, letterFont);
                     //g2.drawString(String.valueOf(game.guesses[i].charAt(j)), x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
                 } else if (i == game.totalGuesses) {
                     String str = String.valueOf(guesser.letters[j]);
-                    Rectangle r = new Rectangle(x - SQUARE_SIZE / 2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
+                    Rectangle r = new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE);
                     centerString(g, r, str, letterFont);
                     //g2.drawString(str, x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
                 }
-                drawSquare(g, x, y, SQUARE_SIZE, SQUARE_SIZE);
+                //drawSquare(g, x, y, SQUARE_SIZE, SQUARE_SIZE);
+                g2.setColor(game.theme.getLetterColor());
+                g2.drawRoundRect(x, y, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
                 x += SQUARE_SIZE + SPACING;
             }
             x = x0;

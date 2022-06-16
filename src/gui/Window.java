@@ -3,6 +3,7 @@ package gui;
 import game.Game;
 import timedle.Timedle;
 import util.Language;
+import util.Theme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,8 @@ public class Window  extends JFrame implements ActionListener {
 
     private JMenuItem english;
     private JMenuItem slovene;
+    private JMenuItem dark;
+    private JMenuItem light;
 
     public Window() {
         this.setLayout(new GridLayout());
@@ -29,10 +32,16 @@ public class Window  extends JFrame implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
         this.setJMenuBar(menuBar);
 
-        JMenu langMenu = addMenu(menuBar, "Jezik");
+        JMenu settingsMenu = addMenu(menuBar, "Settings");
+        JMenu langMenu = addMenu(menuBar, "New Game");
+        JMenu themeMenu = addMenu(menuBar, "Theme");
 
+        settingsMenu.add(langMenu);
+        settingsMenu.add(themeMenu);
         english = addMenuItem(langMenu, "English");
         slovene = addMenuItem(langMenu, "Slovenščina");
+        light = addMenuItem(themeMenu, "Light");
+        dark = addMenuItem(themeMenu, "Dark");
 
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -59,8 +68,15 @@ public class Window  extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == english) {
             Timedle.playNewGame(Language.ENGLISH, this);
-        } else if (e.getSource() == slovene) {
+        }
+        else if (e.getSource() == slovene) {
             Timedle.playNewGame(Language.SLOVENE, this);
+        }
+        else if (e.getSource() == dark) {
+            canvas.game.theme = Theme.Dark;
+        }
+        else if (e.getSource() == light) {
+            canvas.game.theme = Theme.LIGHT;
         }
     }
 }

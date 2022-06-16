@@ -10,6 +10,7 @@ public class Timedle {
         Game game = new Game();
         Window window = new Window();
         window.canvas.setGame(game);
+        window.setTitle("TIMEDLE");
         window.pack();
         window.setVisible(true);
     }
