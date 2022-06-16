@@ -2,6 +2,7 @@ package gui;
 
 import timedle.Timedle;
 import util.Language;
+import util.Mode;
 import util.Theme;
 
 import javax.swing.*;
@@ -17,6 +18,9 @@ public class Window  extends JFrame implements ActionListener {
     private JMenuItem slovene;
     private JMenuItem dark;
     private JMenuItem light;
+    private JMenuItem slow;
+    private JMenuItem medium;
+    private JMenuItem fast;
 
     private static final int REFRESH_DELAY = 1000;
 
@@ -36,15 +40,19 @@ public class Window  extends JFrame implements ActionListener {
         this.setJMenuBar(menuBar);
 
         JMenu settingsMenu = addMenu(menuBar, "Settings");
-        JMenu langMenu = addMenu(menuBar, "New Game");
+        JMenu modeMenu = addMenu(menuBar, "Mode");
+        JMenu langMenu = addMenu(menuBar, "Language");
         JMenu themeMenu = addMenu(menuBar, "Theme");
 
         settingsMenu.add(langMenu);
         settingsMenu.add(themeMenu);
         english = addMenuItem(langMenu, "English");
-        slovene = addMenuItem(langMenu, "Slovenščina");
+        slovene = addMenuItem(langMenu, "Slovene");
         light = addMenuItem(themeMenu, "Light");
         dark = addMenuItem(themeMenu, "Dark");
+        fast = addMenuItem(modeMenu, "Fast");
+        medium = addMenuItem(modeMenu, "Medium");
+        slow = addMenuItem(modeMenu, "Slow");
 
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -75,10 +83,10 @@ public class Window  extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == english) {
-            Timedle.playNewGame(Language.ENGLISH, theme,  this);
+            Timedle.playNewGame(Language.ENGLISH, canvas.game.mode,  this);
         }
         else if (e.getSource() == slovene) {
-            Timedle.playNewGame(Language.SLOVENE, theme, this);
+            Timedle.playNewGame(Language.SLOVENE, canvas.game.mode, this);
         }
         else if (e.getSource() == dark) {
             theme = Theme.Dark;
@@ -89,6 +97,18 @@ public class Window  extends JFrame implements ActionListener {
             theme = Theme.LIGHT;
             this.setBackground(theme.getBackgroundColor());
             canvas.theme = Theme.LIGHT;
+        }
+        else if (e.getSource() == slow) {
+            canvas.game.mode = Mode.SLOW;
+            canvas.game.setTimer();
+        }
+        else if (e.getSource() == medium) {
+            canvas.game.mode = Mode.MEDIUM;
+            canvas.game.setTimer();
+        }
+        else if (e.getSource() == fast) {
+            canvas.game.mode = Mode.FAST;
+            canvas.game.setTimer();
         }
     }
 }

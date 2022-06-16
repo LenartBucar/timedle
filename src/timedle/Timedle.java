@@ -4,6 +4,7 @@ import game.Game;
 import gui.Canvas;
 import gui.Window;
 import util.Language;
+import util.Mode;
 import util.Theme;
 
 import java.awt.*;
@@ -23,8 +24,8 @@ public class Timedle {
         window.setVisible(true);
     }
 
-    public static void playNewGame (Language lang, Theme theme, Window window) {
-        Game game = new Game(lang, theme);
+    public static void playNewGame (Language lang, Mode mode, Window window) {
+        Game game = new Game(lang, mode);
         window.canvas.setGame(game);
     }
 }

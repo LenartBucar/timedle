@@ -2,10 +2,9 @@ package game;
 
 import exceptions.IncorrectGuessLengthException;
 import util.Language;
-import util.Theme;
+import util.Mode;
 import util.Type;
 
-import java.awt.*;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,29 +21,36 @@ public class Game {
     public Language lang;
 
     public Timer timer;
-    private static final long DELAY = 30_000;
+    private static final long DELAY = 10_000;
+    public Mode mode;
 
     public String lastWord;
 
-    public Game() {this(6, 5, Language.ENGLISH, Theme.LIGHT);}
+    public Game() {this(6, 5, Language.ENGLISH, Mode.MEDIUM);}
 
-    public Game(Language lang) {this(6, 5, lang, Theme.LIGHT);}
+    public Game(Language lang) {this(6, 5, lang, Mode.MEDIUM);}
 
-    public Game(Language lang, Theme theme) {this(6, 5, lang, theme);}
+    public Game(Language lang, Mode mode) {this(6, 5, lang, mode);}
 
-    public Game(int maxGuesses, int wordLength, Language lang, Theme theme) {
+    public Game(int maxGuesses, int wordLength, Language lang, Mode mode) {
         this.maxGuesses = maxGuesses;
         this.wordLength = wordLength;
         guesses = new String[maxGuesses];
         totalGuesses = 0;
         this.lang = lang;
+        this.mode = mode;
         this.lastWord = null;
         newWord();
 
-        this.timer = new Timer();
-        TimerTask swap = new WordSwapper(this);
-        timer.scheduleAtFixedRate(swap, DELAY, DELAY);
+        setTimer();
 
+
+    }
+
+    public void setTimer(){
+        timer = new Timer();
+        TimerTask swap = new WordSwapper(this);
+        timer.scheduleAtFixedRate(swap, mode.getDelay(), mode.getDelay());
     }
 
     private static final Random random = new Random ();
