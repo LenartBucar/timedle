@@ -93,9 +93,19 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
                     Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
                     centerString(g, r, str, letterFont);
                 } else if (i == game.totalGuesses) {
-                    String str = String.valueOf(guesser.letters[j]);
-                    Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
-                    centerString(g, r, str, letterFont);
+                    if(game.lastWord == null) {
+                        String str = String.valueOf(guesser.letters[j]);
+                        Rectangle r = new Rectangle(x - SQUARE_SIZE / 2, y - SQUARE_SIZE / 2, SQUARE_SIZE, SQUARE_SIZE);
+                        centerString(g, r, str, letterFont);
+                    }
+                    else{
+                        g2.setColor(Color.red);
+                        g2.fillRoundRect(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
+                        g2.setColor(theme.getLetterColor());
+                        String str = String.valueOf(game.lastWord.charAt(j));
+                        Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
+                        centerString(g, r, str, letterFont);
+                    }
                 }
                 //drawSquare(g, x, y, SQUARE_SIZE, SQUARE_SIZE);
                 g2.setColor(theme.getLetterColor());

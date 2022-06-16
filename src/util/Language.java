@@ -17,6 +17,21 @@ public enum Language {
 
     public String[] getWords() { return this.words; }
 
+    public boolean containsWord(String word){
+        for (String str: words) {
+            if(str.equals(word.toLowerCase())) return true;
+        }
+        return false;
+    }
+    /*
+    public HashSet<String> getWordsSet() {
+        HashSet<String> set = new HashSet<>(Arrays.asList(words));
+        return set;
+    }
+
+     */
+
+
     public static String[] readWords(String dat){
         try (BufferedReader br = new BufferedReader(new FileReader(dat))) {
             //BufferedReader in = new BufferedReader(new FileReader(dat));

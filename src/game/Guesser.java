@@ -20,8 +20,14 @@ public class Guesser {
     }
 
     public void undo() {
-        if (pos == 0) return;
-        letters[--pos] = ' ';
+        if (game.lastWord != null){
+            letters = game.lastWord.toCharArray();
+            letters[game.wordLength - 1] = ' ';
+            pos = game.wordLength - 1;
+            game.lastWord = null;
+        }
+        else if (pos == 0) return;
+        else letters[--pos] = ' ';
     }
 
     public String submit() {

@@ -5,6 +5,7 @@ import util.Language;
 import util.Theme;
 import util.Type;
 
+import java.awt.*;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,6 +24,8 @@ public class Game {
     public Timer timer;
     private static final long DELAY = 30_000;
 
+    public String lastWord;
+
     public Game() {this(6, 5, Language.ENGLISH, Theme.LIGHT);}
 
     public Game(Language lang) {this(6, 5, lang, Theme.LIGHT);}
@@ -35,6 +38,7 @@ public class Game {
         guesses = new String[maxGuesses];
         totalGuesses = 0;
         this.lang = lang;
+        this.lastWord = null;
         newWord();
 
         this.timer = new Timer();
@@ -85,6 +89,11 @@ public class Game {
 
     public boolean guess(String guessWord) throws IncorrectGuessLengthException {
         if (guessWord.length() != wordLength) throw new IncorrectGuessLengthException();
+        if (!lang.containsWord(guessWord)) {
+            validate();
+            lastWord = guessWord;
+            return false;
+        }
         guesses[totalGuesses++] = guessWord;
         validate();
         return guessWord.equals(word);
