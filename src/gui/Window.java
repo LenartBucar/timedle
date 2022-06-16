@@ -1,6 +1,5 @@
 package gui;
 
-import game.Game;
 import timedle.Timedle;
 import util.Language;
 import util.Theme;
@@ -9,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Time;
 
 public class Window  extends JFrame implements ActionListener {
     public Canvas canvas;
@@ -18,6 +16,8 @@ public class Window  extends JFrame implements ActionListener {
     private JMenuItem slovene;
     private JMenuItem dark;
     private JMenuItem light;
+
+    private static final int REFRESH_DELAY = 1000;
 
     public Window() {
         this.setLayout(new GridLayout());
@@ -45,6 +45,9 @@ public class Window  extends JFrame implements ActionListener {
 
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        ActionListener taskPerformer = evt -> canvas.repaint();
+        new Timer(REFRESH_DELAY, taskPerformer).start();
     }
 
     public void refreshGUI() {

@@ -9,7 +9,6 @@ import util.Type;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
@@ -41,6 +40,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         addMouseMotionListener(this);
         addKeyListener(this);
         setFocusable(true);
+
+
     }
 
     public void setGame(Game g) {
@@ -81,12 +82,10 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
                     String str = String.valueOf(game.guesses[i].charAt(j));
                     Rectangle r = new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE);
                     centerString(g, r, str, letterFont);
-                    //g2.drawString(String.valueOf(game.guesses[i].charAt(j)), x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
                 } else if (i == game.totalGuesses) {
                     String str = String.valueOf(guesser.letters[j]);
                     Rectangle r = new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE);
                     centerString(g, r, str, letterFont);
-                    //g2.drawString(str, x - (FONT_SIZE - SPACING) / 2, y + (FONT_SIZE - SPACING) / 2);
                 }
                 //drawSquare(g, x, y, SQUARE_SIZE, SQUARE_SIZE);
                 g2.setColor(game.theme.getLetterColor());
@@ -125,7 +124,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        // unneeded
     }
 
     @Override
@@ -153,41 +152,41 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        // unneeded
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        // unneeded
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        // unneeded
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        // unneeded
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        // unneeded
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        // unneeded
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        // unneeded
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        // unneeded
     }
 }

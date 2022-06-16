@@ -5,11 +5,9 @@ import util.Language;
 import util.Theme;
 import util.Type;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game {
     private String word;
@@ -23,7 +21,10 @@ public class Game {
     public Language lang;
     public Theme theme;
 
-    public Game() {this(6, 5, Language.ENGLISH, Theme.LIGHT);}
+    public Timer timer;
+    private static final long DELAY = 30_000;
+
+    public Game() {this(6, 5, Language.ENGLISH);}
 
     public Game(Language lang) {this(6, 5, lang, Theme.LIGHT);}
 
@@ -37,6 +38,11 @@ public class Game {
         this.lang = lang;
         this.theme = theme;
         newWord();
+
+        this.timer = new Timer();
+        TimerTask swap = new WordSwapper(this);
+        timer.scheduleAtFixedRate(swap, DELAY, DELAY);
+
     }
 
     private static final Random random = new Random ();
@@ -53,11 +59,11 @@ public class Game {
         resetValidation();
     }
 
-    private void resetValidation() {
+    public void resetValidation() {
         validation = new Type[maxGuesses][wordLength];
     }
 
-    private void validate() {
+    public void validate() {
         for (int i = 0; i < maxGuesses; i++) {
             String g = guesses[i];
             if (g == null) continue;
@@ -84,5 +90,22 @@ public class Game {
         guesses[totalGuesses++] = guessWord;
         validate();
         return guessWord.equals(word);
+    }
+
+}
+
+class WordSwapper extends TimerTask {
+    private Game game;
+
+    public WordSwapper (Game game) {
+        super();
+        this.game = game;
+    }
+
+    @Override
+    public void run() {
+        game.newWord();
+        game.resetValidation();
+        game.validate();
     }
 }
