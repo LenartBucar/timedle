@@ -22,6 +22,8 @@ public class Window  extends JFrame implements ActionListener {
     private JMenuItem medium;
     private JMenuItem fast;
 
+    private JButton newGame;
+
     private static final int REFRESH_DELAY = 1000;
 
     public Window() {
@@ -55,9 +57,17 @@ public class Window  extends JFrame implements ActionListener {
         slow = addMenuItem(modeMenu, "Slow");
 
 
+
+        JButton b = new JButton("New Game");
+        b.addActionListener(this);
+        b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        newGame = b;
+        main.add(newGame);
+
+
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        setLocationRelativeTo(null);
 
         ActionListener taskPerformer = evt -> canvas.repaint();
         new Timer(REFRESH_DELAY, taskPerformer).start();
@@ -109,6 +119,9 @@ public class Window  extends JFrame implements ActionListener {
         else if (e.getSource() == fast) {
             canvas.game.mode = Mode.FAST;
             canvas.game.setTimer();
+        }
+        else if (e.getSource() == newGame) {
+            Timedle.playNewGame(canvas.game.lang, canvas.game.mode, this);
         }
     }
 }

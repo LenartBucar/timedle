@@ -3,6 +3,7 @@ package gui;
 import exceptions.IncorrectGuessLengthException;
 import game.Game;
 import game.Guesser;
+import org.w3c.dom.css.Rect;
 import util.Theme;
 import util.Type;
 
@@ -47,6 +48,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     public void setGame(Game g) {
         this.game = g;
         this.guesser = new Guesser(g);
+        System.out.println("tuki");
         repaint();
     }
 
@@ -72,6 +74,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         int x, y;
         int x0 = x = (w - (game.wordLength - 1) * (SQUARE_SIZE + SPACING)) / 2;
         int y0 = y = (h - (game.maxGuesses - 1) * (SQUARE_SIZE + SPACING)) / 2;
+
+        Rectangle rec = new Rectangle(x0 - SQUARE_SIZE / 2, 0,  game.wordLength * SQUARE_SIZE + (game.wordLength - 1) * SPACING, y0);
+        centerString(g, rec, "TIMEDLE", letterFont);
 
         //g2.setColor(defaultColour);
         g2.setStroke(lineWidth);
