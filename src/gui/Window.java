@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 
 public class Window  extends JFrame implements ActionListener {
     public Canvas canvas;
+    public Theme theme;
 
     private JMenuItem english;
     private JMenuItem slovene;
@@ -29,6 +30,8 @@ public class Window  extends JFrame implements ActionListener {
         canvas = new Canvas(1000, 1000);
         main.add(canvas);
 
+        theme = Theme.LIGHT;
+
         JMenuBar menuBar = new JMenuBar();
         this.setJMenuBar(menuBar);
 
@@ -45,6 +48,8 @@ public class Window  extends JFrame implements ActionListener {
 
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 
         ActionListener taskPerformer = evt -> canvas.repaint();
         new Timer(REFRESH_DELAY, taskPerformer).start();
@@ -70,16 +75,20 @@ public class Window  extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == english) {
-            Timedle.playNewGame(Language.ENGLISH, this);
+            Timedle.playNewGame(Language.ENGLISH, theme,  this);
         }
         else if (e.getSource() == slovene) {
-            Timedle.playNewGame(Language.SLOVENE, this);
+            Timedle.playNewGame(Language.SLOVENE, theme, this);
         }
         else if (e.getSource() == dark) {
-            canvas.game.theme = Theme.Dark;
+            theme = Theme.Dark;
+            this.setBackground(theme.getBackgroundColor());
+            canvas.theme = Theme.Dark;
         }
         else if (e.getSource() == light) {
-            canvas.game.theme = Theme.LIGHT;
+            theme = Theme.LIGHT;
+            this.setBackground(theme.getBackgroundColor());
+            canvas.theme = Theme.LIGHT;
         }
     }
 }

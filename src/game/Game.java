@@ -19,12 +19,11 @@ public class Game {
     public int totalGuesses;
 
     public Language lang;
-    public Theme theme;
 
     public Timer timer;
     private static final long DELAY = 30_000;
 
-    public Game() {this(6, 5, Language.ENGLISH);}
+    public Game() {this(6, 5, Language.ENGLISH, Theme.LIGHT);}
 
     public Game(Language lang) {this(6, 5, lang, Theme.LIGHT);}
 
@@ -36,7 +35,6 @@ public class Game {
         guesses = new String[maxGuesses];
         totalGuesses = 0;
         this.lang = lang;
-        this.theme = theme;
         newWord();
 
         this.timer = new Timer();
@@ -50,11 +48,11 @@ public class Game {
     /**
      * chooses a random word to guess from dictionary
      */
-    private void newWord() {
-        HashSet<String> words = lang.getWords();
-        String[] arrayWords = words.toArray(new String[words.size()]);
-        int i = random.nextInt(arrayWords.length);
-        word = arrayWords[i].toUpperCase();
+    protected void newWord() {
+        String[] words = lang.getWords();
+        //String[] arrayWords = words.toArray(new String[words.size()]);
+        int i = random.nextInt(words.length);
+        word = words[i].toUpperCase();
         System.out.println(word);
         resetValidation();
     }

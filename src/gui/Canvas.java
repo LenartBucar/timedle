@@ -15,6 +15,7 @@ import javax.swing.*;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
     protected Game game;
+    public Theme theme;
 
     private static final int SQUARE_SIZE = 50;
     private static final int SPACING = SQUARE_SIZE / 5;
@@ -31,6 +32,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         this.setPreferredSize(new Dimension(x, y));
 
         this.game = null;
+        this.theme = Theme.LIGHT;
 
         this.defaultColour = Color.BLACK;
         this.lineWidth = new BasicStroke(2.0F);
@@ -40,14 +42,22 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         addMouseMotionListener(this);
         addKeyListener(this);
         setFocusable(true);
-
-
     }
 
     public void setGame(Game g) {
         this.game = g;
         this.guesser = new Guesser(g);
         repaint();
+    }
+
+    public Dimension getDimension(){
+        Dimension dim = new Dimension((game.wordLength + 2) * (SQUARE_SIZE + SPACING), (game.maxGuesses + 2) * (SQUARE_SIZE + SPACING));
+        return dim;
+    }
+
+    public Dimension getMinDimension(){
+        Dimension dim = new Dimension((game.wordLength + 2) * (SQUARE_SIZE + SPACING), (game.maxGuesses + 4) * (SQUARE_SIZE + SPACING));
+        return dim;
     }
 
     @Override
@@ -60,16 +70,16 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         int w = getWidth();
 
         int x, y;
-        int x0 = x = (w - (game.wordLength - 1) * (SQUARE_SIZE + SPACING)) / 2; //why -1?
-        int y0 = y = SQUARE_SIZE + SPACING;
+        int x0 = x = (w - (game.wordLength - 1) * (SQUARE_SIZE + SPACING)) / 2;
+        int y0 = y = (h - (game.maxGuesses - 1) * (SQUARE_SIZE + SPACING)) / 2;
 
         //g2.setColor(defaultColour);
         g2.setStroke(lineWidth);
 
         g2.setFont(letterFont);
 
-        setBackground(game.theme.getBackgroundColor());
-        g2.setColor(game.theme.getLetterColor());
+        setBackground(theme.getBackgroundColor());
+        g2.setColor(theme.getLetterColor());
 
 
         for (int i = 0; i < game.maxGuesses; i++) {
@@ -77,19 +87,19 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
                 if (i < game.totalGuesses) {
                     //fillSquare(g, game.validation[i][j], x, y, SQUARE_SIZE, SQUARE_SIZE);
                     g2.setColor(game.validation[i][j].getColour());
-                    g2.fillRoundRect(x, y, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
-                    g2.setColor(game.theme.getLetterColor());
+                    g2.fillRoundRect(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
+                    g2.setColor(theme.getLetterColor());
                     String str = String.valueOf(game.guesses[i].charAt(j));
-                    Rectangle r = new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE);
+                    Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
                     centerString(g, r, str, letterFont);
                 } else if (i == game.totalGuesses) {
                     String str = String.valueOf(guesser.letters[j]);
-                    Rectangle r = new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE);
+                    Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
                     centerString(g, r, str, letterFont);
                 }
                 //drawSquare(g, x, y, SQUARE_SIZE, SQUARE_SIZE);
-                g2.setColor(game.theme.getLetterColor());
-                g2.drawRoundRect(x, y, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
+                g2.setColor(theme.getLetterColor());
+                g2.drawRoundRect(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
                 x += SQUARE_SIZE + SPACING;
             }
             x = x0;
