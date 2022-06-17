@@ -21,14 +21,17 @@ public class Game {
     public Language lang;
 
     public Timer timer;
-    private static final long DELAY = 10_000;
+    //private static final long DELAY = 10_000;
     public Mode mode;
 
     public String lastWord;
+    public boolean win;
 
     public Game() {this(6, 5, Language.ENGLISH, Mode.MEDIUM);}
 
     public Game(Language lang) {this(6, 5, lang, Mode.MEDIUM);}
+
+    public Game(Mode mode) {this(6, 5, Language.ENGLISH, mode);}
 
     public Game(Language lang, Mode mode) {this(6, 5, lang, mode);}
 
@@ -40,6 +43,7 @@ public class Game {
         this.lang = lang;
         this.mode = mode;
         this.lastWord = null;
+        this.win = false;
         newWord();
 
         setTimer();
@@ -47,6 +51,9 @@ public class Game {
 
     }
 
+    /**
+     * sets new timer with delay, specified in mode
+     */
     public void setTimer(){
         timer = new Timer();
         TimerTask swap = new WordSwapper(this);
@@ -59,6 +66,7 @@ public class Game {
      * chooses a random word to guess from dictionary
      */
     protected void newWord() {
+        if (win) return;
         String[] words = lang.getWords();
         //String[] arrayWords = words.toArray(new String[words.size()]);
         int i = random.nextInt(words.length);
@@ -67,10 +75,19 @@ public class Game {
         resetValidation();
     }
 
+    /**
+     * resets validation matrix and checks if any of the previous guesses became correct
+     */
     public void resetValidation() {
         validation = new Type[maxGuesses][wordLength];
+        for (int i = 0; i < totalGuesses; i++) {
+            if (word.equals(guesses[i])) endGame();
+        }
     }
 
+    /**
+     * fills validation matrix based on mach of letters
+     */
     public void validate() {
         for (int i = 0; i < maxGuesses; i++) {
             String g = guesses[i];
@@ -93,6 +110,12 @@ public class Game {
         }
     }
 
+    /**
+     * colors word red if it is not in wordlist, continues if the word is too short, otherwise adds word to guesses
+     * @param guessWord word to guess
+     * @return boolean whether guessWord is the winning word
+     * @throws IncorrectGuessLengthException
+     */
     public boolean guess(String guessWord) throws IncorrectGuessLengthException {
         if (guessWord.length() != wordLength) throw new IncorrectGuessLengthException();
         if (!lang.containsWord(guessWord)) {
@@ -105,8 +128,18 @@ public class Game {
         return guessWord.equals(word);
     }
 
+    /**
+     * sets game to win state and disables further guessing
+     */
+    public void endGame(){
+        win = true;
+    }
+
 }
 
+/**
+ * changes word with frequency specified in game mode
+ */
 class WordSwapper extends TimerTask {
     private Game game;
 

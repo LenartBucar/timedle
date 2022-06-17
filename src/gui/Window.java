@@ -16,8 +16,10 @@ public class Window  extends JFrame implements ActionListener {
 
     private JMenuItem english;
     private JMenuItem slovene;
+
     private JMenuItem dark;
     private JMenuItem light;
+
     private JMenuItem slow;
     private JMenuItem medium;
     private JMenuItem fast;
@@ -56,18 +58,14 @@ public class Window  extends JFrame implements ActionListener {
         medium = addMenuItem(modeMenu, "Medium");
         slow = addMenuItem(modeMenu, "Slow");
 
-
-
         JButton b = new JButton("New Game");
         b.addActionListener(this);
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        b.setFocusable(true);
         newGame = b;
         main.add(newGame);
 
-
-
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         ActionListener taskPerformer = evt -> canvas.repaint();
         new Timer(REFRESH_DELAY, taskPerformer).start();
@@ -122,6 +120,7 @@ public class Window  extends JFrame implements ActionListener {
         }
         else if (e.getSource() == newGame) {
             Timedle.playNewGame(canvas.game.lang, canvas.game.mode, this);
+            canvas.requestFocusInWindow();
         }
     }
 }

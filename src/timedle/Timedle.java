@@ -24,6 +24,12 @@ public class Timedle {
         window.setVisible(true);
     }
 
+    /**
+     * plays new game with chosen language and mode
+     * @param lang language to play in
+     * @param mode speed of word change
+     * @param window
+     */
     public static void playNewGame (Language lang, Mode mode, Window window) {
         Game game = new Game(lang, mode);
         window.canvas.setGame(game);

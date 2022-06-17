@@ -20,7 +20,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     private static final int SQUARE_SIZE = 50;
     private static final int SPACING = SQUARE_SIZE / 5;
-
     private static final int FONT_SIZE = SQUARE_SIZE - SPACING;
 
     protected Color defaultColour;
@@ -45,23 +44,35 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         setFocusable(true);
     }
 
+    /**
+     * adds game to canvas and sets up guesser
+     * @param g game to add to canvas
+     */
     public void setGame(Game g) {
         this.game = g;
         this.guesser = new Guesser(g);
-        System.out.println("tuki");
         repaint();
     }
 
+    /**
+     * computes preferred dimension od the window
+     */
     public Dimension getDimension(){
         Dimension dim = new Dimension((game.wordLength + 2) * (SQUARE_SIZE + SPACING), (game.maxGuesses + 2) * (SQUARE_SIZE + SPACING));
         return dim;
     }
 
+    /**
+     * computes minimal dimension of the window, which still shows the whole board
+     */
     public Dimension getMinDimension(){
-        Dimension dim = new Dimension((game.wordLength + 2) * (SQUARE_SIZE + SPACING), (game.maxGuesses + 4) * (SQUARE_SIZE + SPACING));
+        Dimension dim = new Dimension((game.wordLength + 2) * (SQUARE_SIZE + SPACING), (game.maxGuesses + 6) * (SQUARE_SIZE + SPACING));
         return dim;
     }
 
+    /**
+     * Paints title and board on canvas
+     */
     @Override
     protected void paintComponent(Graphics g) {
         if (this.game == null) return;
@@ -72,47 +83,36 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         int w = getWidth();
 
         int x, y;
-        int x0 = x = (w - (game.wordLength - 1) * (SQUARE_SIZE + SPACING)) / 2;
-        int y0 = y = (h - (game.maxGuesses - 1) * (SQUARE_SIZE + SPACING)) / 2;
+        int x0 = x = (w - (game.wordLength - 1) * (SQUARE_SIZE + SPACING)) / 2; //x coordinate of top left corner of board
+        int y0 = y = (h - (game.maxGuesses - 1) * (SQUARE_SIZE + SPACING)) / 2; //y coordinate of top left corner of board
 
-        Rectangle rec = new Rectangle(x0 - SQUARE_SIZE / 2, 0,  game.wordLength * SQUARE_SIZE + (game.wordLength - 1) * SPACING, y0);
-        centerString(g, rec, "TIMEDLE", letterFont);
+        g2.setColor(defaultColour);
+        Rectangle rec = new Rectangle(x0 - SQUARE_SIZE / 2, Math.max(y0 - 2 * SQUARE_SIZE, 0),  game.wordLength * SQUARE_SIZE + (game.wordLength - 1) * SPACING, Math.min(y0, 2 * SQUARE_SIZE));
+        centerString(g, rec, "TIMEDLE", letterFont); //paint title above the board
 
-        //g2.setColor(defaultColour);
         g2.setStroke(lineWidth);
-
         g2.setFont(letterFont);
-
         setBackground(theme.getBackgroundColor());
         g2.setColor(theme.getLetterColor());
 
-
+        //paints board
         for (int i = 0; i < game.maxGuesses; i++) {
             for (int j = 0; j < game.wordLength; j++) {
                 if (i < game.totalGuesses) {
-                    //fillSquare(g, game.validation[i][j], x, y, SQUARE_SIZE, SQUARE_SIZE);
-                    g2.setColor(game.validation[i][j].getColour());
-                    g2.fillRoundRect(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
-                    g2.setColor(theme.getLetterColor());
+                    fillSquare(g2, game.validation[i][j].getColour(), x, y, SQUARE_SIZE);
                     String str = String.valueOf(game.guesses[i].charAt(j));
-                    Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
-                    centerString(g, r, str, letterFont);
+                    drawStr(g2, theme.getLetterColor(), str, x, y, SQUARE_SIZE);
                 } else if (i == game.totalGuesses) {
                     if(game.lastWord == null) {
                         String str = String.valueOf(guesser.letters[j]);
-                        Rectangle r = new Rectangle(x - SQUARE_SIZE / 2, y - SQUARE_SIZE / 2, SQUARE_SIZE, SQUARE_SIZE);
-                        centerString(g, r, str, letterFont);
+                        drawStr(g2, theme.getLetterColor(), str, x, y, SQUARE_SIZE);
                     }
                     else{
-                        g2.setColor(Color.red);
-                        g2.fillRoundRect(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
-                        g2.setColor(theme.getLetterColor());
+                        fillSquare(g2, Color.red, x, y, SQUARE_SIZE);
                         String str = String.valueOf(game.lastWord.charAt(j));
-                        Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE);
-                        centerString(g, r, str, letterFont);
+                        drawStr(g2, theme.getLetterColor(), str, x, y, SQUARE_SIZE);
                     }
                 }
-                //drawSquare(g, x, y, SQUARE_SIZE, SQUARE_SIZE);
                 g2.setColor(theme.getLetterColor());
                 g2.drawRoundRect(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE, 10, 10);
                 x += SQUARE_SIZE + SPACING;
@@ -122,16 +122,37 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         }
     }
 
-
-
-    protected void drawSquare(Graphics g, int x, int y, int h, int w) {
-        g.drawRect(x - w/2, y - h/2, w, h);
+    /**
+     * fills rounded square with center in (x, y) and size d
+     * @param g graphics
+     * @param color color to fill with
+     * @param x x coordinate of center of square
+     * @param y y coordinate of center of square
+     * @param d size of square
+     */
+    protected void fillSquare(Graphics2D g, Color color, int x, int y, int d){
+        g.setColor(color);
+        g.fillRoundRect(x - d/2, y - d/2, d, d, 10, 10);
     }
-    protected void fillSquare(Graphics g, Type t, int x, int y, int h, int w) {
-        g.setColor(t.getColour());
-        g.fillRect(x - w/2, y - h/2, w, h);
-        g.setColor(defaultColour);
+
+    /**
+     * draws string in center of square with center on (x, y) and size d
+     * @param g graphics
+     * @param color color of string
+     * @param str string to center
+     * @param x x coordinate of center of square
+     * @param y y coordinate of center of square
+     * @param d size of square
+     */
+    protected void drawStr(Graphics2D g, Color color, String str, int x, int y, int d){
+        g.setColor(color);
+        Rectangle r = new Rectangle(x - SQUARE_SIZE/2, y - SQUARE_SIZE/2, d, d);
+        centerString(g, r, str, letterFont);
     }
+
+    /**
+     * draws string in center of rectangle
+     */
     public void centerString(Graphics g, Rectangle r, String s, Font font) {
         FontRenderContext frc = new FontRenderContext(null, true, true);
         Rectangle2D r2D = font.getStringBounds(s, frc);
@@ -155,22 +176,25 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     @Override
     public void keyPressed(KeyEvent e) {
         if (this.game == null) return;
+        if (game.win) return;
+        boolean win = false;
         int key = e.getKeyCode();
-        if (key >= KeyEvent.VK_A && key <= KeyEvent.VK_Z) {
+        if (key >= KeyEvent.VK_A && key <= KeyEvent.VK_Z) { //inserts typed letter in guess
             guesser.guess(Character.toUpperCase(e.getKeyChar()));
         }
-        if (key == KeyEvent.VK_BACK_SPACE) {
+        if (key == KeyEvent.VK_BACK_SPACE) { //deletes last letter if possible
             guesser.undo();
         }
-        if (key == KeyEvent.VK_ENTER) {
+        if (key == KeyEvent.VK_ENTER) { //guesses the word typed
             String w = guesser.submit();
             if (w != null) {
                 try {
-                    game.guess(w);
+                    win = game.guess(w);
                 } catch (IncorrectGuessLengthException ex) {
                     throw new RuntimeException(ex);
                 }
             }
+            if(win) game.endGame();
         }
         repaint();
     }
